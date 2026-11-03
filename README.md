@@ -2,9 +2,9 @@
 
 为 ChatGPT 网页添加一个安静的右侧目录：平时只显示横杠，悬停预览提问与标题，点击跳转到相应内容。支持 Edge，也可在 Chrome 中以解压扩展的方式加载。
 
-**当前版本：1.1.1 · Manifest V3 · 本地运行 · 无第三方运行依赖**
+**首次公开版本：1.0.0 · Manifest V3 · 本地运行 · 无第三方运行依赖**
 
-[下载安装包](chatgpt-outline-v1.1.1.zip?raw=true) · [隐私说明](PRIVACY.md) · [更新记录](CHANGELOG.md)
+[下载安装包](chatgpt-outline-v1.0.0.zip?raw=true) · [隐私说明](docs/PRIVACY.md) · [更新记录](docs/CHANGELOG.md)
 
 ## 示例效果
 
@@ -14,17 +14,17 @@
 
 长横杠对应历史提问，短横杠对应回答中的一级标题。阅读位置会自动高亮。
 
-![收起状态：右侧仅显示横杠](preview-collapsed.png)
+![收起状态：右侧仅显示横杠](docs/images/preview-collapsed.png)
 
 ### 悬停：逐级展开到三级
 
 悬停一级标题，只显示它的二级标题；再悬停某个二级标题，只显示它的三级标题。切换分支时，之前的分支自动收起。
 
-![逐级展开：一级、二级和三级标题](preview-expanded.png)
+![逐级展开：一级、二级和三级标题](docs/images/preview-expanded.png)
 
 ### 深色模式
 
-![深色模式中的逐级目录](preview-dark.png)
+![深色模式中的逐级目录](docs/images/preview-dark.png)
 
 ## 安装到 Microsoft Edge
 
@@ -35,7 +35,7 @@
 5. 点击「加载解压缩的扩展」，选择**直接包含 `manifest.json` 的文件夹**。
 6. 打开或刷新 `https://chatgpt.com`，进入一段已有聊天。
 
-也可以使用 GitHub 的 **Code → Download ZIP** 下载整个仓库，解压后直接选择包含 `manifest.json` 的仓库目录。
+也可以使用 GitHub 的 **Code → Download ZIP** 下载整个仓库。解压后进入仓库目录，选择其中的 **`chatgpt-outline/` 子文件夹**，不要选择仓库根目录。该子文件夹直接包含 `manifest.json`。
 
 > 扩展尚未发布到扩展商店，当前使用本地加载方式安装。不能直接选择 ZIP 文件；安装后请保留已加载的文件夹。
 
@@ -119,23 +119,36 @@
 
 **网页更新后识别失效？**
 
-ChatGPT 的网页结构可能改变，需要调整 `outline-core.js` 中的消息选择器。当前同时兼容 `data-message-author-role` 和 `data-conversation-role` 两种结构。
+ChatGPT 的网页结构可能改变，需要调整 `chatgpt-outline/outline-core.js` 中的消息选择器。当前同时兼容 `data-message-author-role` 和 `data-conversation-role` 两种结构。
 
 ## 隐私与权限
 
 扩展只在 `https://chatgpt.com/*` 和旧域名 `https://chat.openai.com/*` 上运行。消息正文只在当前页面内存中用于生成目录，不上传、不持久保存；仅将设置写入 `chrome.storage.local`。没有后台服务、遥测、远程代码、第三方请求或外部 API。
 
-唯一显式权限是 `storage`。内容脚本的站点匹配规则限定为上述两个域名。详见 [PRIVACY.md](PRIVACY.md)。
+唯一显式权限是 `storage`。内容脚本的站点匹配规则限定为上述两个域名。详见 [PRIVACY.md](docs/PRIVACY.md)。
 
-## 源码结构
+## 仓库结构
 
-| 文件 | 用途 |
-| --- | --- |
-| `manifest.json` | 扩展入口与站点匹配规则 |
-| `outline-core.js` | 消息提取、编号识别与标题分层 |
-| `content.js` | 目录界面、逐级悬停与滚动定位 |
-| `popup.html`、`popup.css`、`popup.js` | 设置页面 |
-| `icon-*.png` | 扩展图标 |
-| `preview-*.png` | 虚构示例页面的效果图 |
+```text
+.
+├── chatgpt-outline/               浏览器扩展源码，加载此文件夹
+│   ├── manifest.json
+│   ├── outline-core.js
+│   ├── content.js
+│   ├── popup.html
+│   ├── popup.css
+│   ├── popup.js
+│   └── icons/
+├── docs/
+│   ├── images/                    虚构内容的效果示例图
+│   ├── PRIVACY.md
+│   └── CHANGELOG.md
+├── chatgpt-outline-v1.0.0.zip      可直接解压安装的扩展包
+├── README.md
+├── .gitignore
+└── .gitattributes
+```
 
-浏览器直接加载这些文件即可运行，无需构建步骤。项目不是 OpenAI 的官方产品，与 OpenAI 无隶属关系。
+`outline-core.js` 负责消息提取、编号识别与分层；`content.js` 负责目录界面和跳转；`popup.*` 为设置页面。浏览器直接加载 `chatgpt-outline/` 即可运行，无需构建步骤。
+
+项目不是 OpenAI 的官方产品，与 OpenAI 无隶属关系。
