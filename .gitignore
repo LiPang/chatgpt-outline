@@ -1,0 +1,13 @@
+# Local development artifacts
+node_modules/
+work/
+outputs/
+*-profile/
+.env
+.env.*
+*.log
+*.tmp
+*.pem
+*.key
+.DS_Store
+Thumbs.db

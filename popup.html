@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ChatGPT Outline</title>
+  <link rel="stylesheet" href="popup.css">
+  <script src="outline-core.js" defer></script>
+  <script src="popup.js" defer></script>
+</head>
+<body>
+  <header><img src="icon-48.png" alt="" width="32" height="32"><div><h1>ChatGPT Outline</h1><p>A quiet way to find your place.</p></div></header>
+  <form id="settings">
+    <label class="toggle"><span>Show outline</span><input id="enabled" type="checkbox" role="switch"></label>
+    <label class="toggle"><span>Include answer headings</span><input id="showHeadings" type="checkbox" role="switch"></label>
+    <label class="toggle"><span>Smooth scrolling</span><input id="smoothScroll" type="checkbox" role="switch"></label>
+    <label class="range" for="previewLength"><span>Preview length</span><output id="previewLengthValue" for="previewLength">80</output></label>
+    <input id="previewLength" type="range" min="30" max="160" step="10" value="80">
+    <label class="range" for="rightOffset"><span>Distance from right edge</span><output id="rightOffsetValue" for="rightOffset">18 px</output></label>
+    <input id="rightOffset" type="range" min="8" max="120" step="1" value="18">
+  </form>
+  <footer><span id="status" role="status">Settings save automatically.</span><p>Long marks: prompts · Short marks: top headings<br>Hover headings to browse levels 2 and 3.<br>Click to jump.</p><span class="privacy">Local only. No uploads.</span></footer>
+</body>
+</html>
