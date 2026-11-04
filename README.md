@@ -2,9 +2,9 @@
 
 为 ChatGPT 网页添加一个安静的右侧目录：平时只显示横杠，悬停预览提问与标题，点击跳转到相应内容。支持 Edge，也可在 Chrome 中以解压扩展的方式加载。
 
-**首次公开版本：1.0.0 · Manifest V3 · 本地运行 · 无第三方运行依赖**
+**当前版本：1.0.1 · Manifest V3 · 本地运行 · 无第三方运行依赖**
 
-[下载安装包](chatgpt-outline-v1.0.0.zip?raw=true) · [隐私说明](docs/PRIVACY.md) · [更新记录](docs/CHANGELOG.md)
+[下载安装包](chatgpt-outline-v1.0.1.zip?raw=true) · [隐私说明](docs/PRIVACY.md) · [更新记录](docs/CHANGELOG.md)
 
 ## 示例效果
 
@@ -80,6 +80,7 @@
 - 没有「部分」总标题时：「一、二、三……」为一级，下属小节继续向下分层。
 - 没有明确编号的标题，参考网页标签和前面已经确定的层级。
 - 也识别独立短段落中的中文编号标题及加粗数字编号标题。
+- 普通段落必须在编号后包含实际标题内容；解释中的「第一部分：」「第二部分：」等空标签不会进入目录。
 - 代码块、引用、表格和普通列表中的段落不会被当成子标题。
 
 标题识别属于启发式判断；格式非常不规则的回答仍可能需要适配。
@@ -143,12 +144,15 @@ ChatGPT 的网页结构可能改变，需要调整 `chatgpt-outline/outline-core
 │   ├── images/                    虚构内容的效果示例图
 │   ├── PRIVACY.md
 │   └── CHANGELOG.md
-├── chatgpt-outline-v1.0.0.zip      可直接解压安装的扩展包
+├── tests/                        编号标题识别的回归测试
+├── chatgpt-outline-v1.0.1.zip      可直接解压安装的扩展包
 ├── README.md
 ├── .gitignore
 └── .gitattributes
 ```
 
 `outline-core.js` 负责消息提取、编号识别与分层；`content.js` 负责目录界面和跳转；`popup.*` 为设置页面。浏览器直接加载 `chatgpt-outline/` 即可运行，无需构建步骤。
+
+开发时可使用 Node.js 运行 `node --test tests/numbered-headings.test.cjs`，检查编号识别与分层规则；安装和使用扩展不需要 Node.js。
 
 项目不是 OpenAI 的官方产品，与 OpenAI 无隶属关系。

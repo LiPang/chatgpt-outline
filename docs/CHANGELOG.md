@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1
+
+- Require actual title content after a paragraph's numbering prefix.
+- Exclude bare part labels and punctuation-only labels from the outline, including labels that introduce formulas.
+- Preserve complete numbered headings and progressive three-level navigation.
+- Add regression tests using synthetic examples.
+
 ## 1.0.0
 
 Initial public release.

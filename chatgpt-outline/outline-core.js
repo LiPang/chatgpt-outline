@@ -33,9 +33,11 @@
     const text = normalize(value);
     if (!text || Array.from(text).length > 90) return false;
     const chineseNumber = "[一二三四五六七八九十百千万零〇两]+";
-    const chinesePrefix = new RegExp("^(?:" + chineseNumber + "[、．.：:]|[（(]" + chineseNumber + "[）)]|第[一二三四五六七八九十百千万零〇两0-9]+[章节部分篇])\\s*\\S", "u");
-    const numericPrefix = /^(?:\d{1,2}[.、．)](?!\d)|\d{1,2}(?:\.\d{1,2}){1,3}[.、．:]?\s)\s*\S/u;
-    return chinesePrefix.test(text) || (emphasized && numericPrefix.test(text));
+    const chinesePrefix = new RegExp("^(?:" + chineseNumber + "[、．.：:]|[（(]" + chineseNumber + "[）)]|第[一二三四五六七八九十百千万零〇两0-9]+(?:部分|篇|章|节)[：:、.．]?)\\s*", "u");
+    const numericPrefix = /^(?:\d{1,2}[.、．)](?!\d)|\d{1,2}(?:\.\d{1,2}){1,3}[.、．:]?\s)\s*/u;
+    const prefix = text.match(chinesePrefix) || (emphasized ? text.match(numericPrefix) : null);
+    // A paragraph needs a title beyond its numbering and punctuation.
+    return prefix !== null && /[\p{L}\p{N}]/u.test(text.slice(prefix[0].length));
   }
 
   function isRendered(element) {
