@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2
+
+- Read the currently visible conversation root instead of the first cached main element.
+- Refresh the outline when cached views change visibility, messages load later, or the application replaces its page containers.
+- Reset open branches when switching conversations and handle browser back/forward navigation.
+- Add browser regression tests for conversation switching without page reloads in current and legacy message layouts.
+
 ## 1.0.1
 
 - Require actual title content after a paragraph's numbering prefix.

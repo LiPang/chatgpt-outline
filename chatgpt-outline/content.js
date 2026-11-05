@@ -250,14 +250,27 @@
     queueActive();
   }
 
+  function findConversationRoot() {
+    for (const main of document.querySelectorAll("main")) {
+      if (!main.closest('[hidden], [aria-hidden="true"], [inert]') && main.getClientRects().length > 0) return main;
+    }
+    return document.body;
+  }
+
   function rebuild() {
     rebuildTimer = 0;
     updateTheme();
     nav.hidden = !settings.enabled;
     if (!settings.enabled) { closeBranches(); return; }
-    const main = document.querySelector("main") || document.body;
-    if (main !== observedMain) {
-      resizeObserver.disconnect(); resizeObserver.observe(main); observedMain = main;
+    const main = findConversationRoot();
+    if (location.href !== currentUrl || main !== observedMain) {
+      currentUrl = location.href;
+      list.scrollTop = 0;
+      setExpanded(false);
+      forceRebuild = true;
+      if (main !== observedMain) {
+        resizeObserver.disconnect(); resizeObserver.observe(main); observedMain = main;
+      }
     }
     const next = core.collectEntries(main, settings);
     nav.hidden = next.length === 0;
@@ -364,9 +377,13 @@
 
   const resizeObserver = new ResizeObserver(() => { queueActive(); scheduleRebuild(); });
   const observer = new MutationObserver((records) => { if (records.some((record) => !host.contains(record.target))) scheduleRebuild(); });
-  observer.observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["data-message-author-role", "data-conversation-role", "data-testid", "hidden", "aria-hidden", "aria-level"] });
+  // The application retains hidden conversation roots and can replace its body.
+  observer.observe(document.documentElement, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["data-message-author-role", "data-conversation-role", "data-testid", "hidden", "aria-hidden", "aria-level", "inert", "class", "style"] });
   new MutationObserver(updateTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme", "data-color-mode"] });
   document.addEventListener("scroll", queueActive, { passive: true, capture: true });
+  window.addEventListener("popstate", scheduleRebuild);
+  window.addEventListener("pageshow", scheduleRebuild);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) scheduleRebuild(); });
   window.addEventListener("resize", () => {
     nav.style.right = Math.min(settings.rightOffset, innerWidth < 640 ? 12 : 120) + "px";
     closeBranches(); scheduleRebuild(); queueActive();
@@ -374,7 +391,7 @@
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", updateTheme);
   setInterval(() => {
     if (!host.isConnected) document.documentElement.append(host);
-    if (location.href !== currentUrl) { currentUrl = location.href; list.scrollTop = 0; setExpanded(false); scheduleRebuild(); }
+    if (settings.enabled && (location.href !== currentUrl || findConversationRoot() !== observedMain)) scheduleRebuild();
   }, 900);
   chrome.storage.local.get(core.defaults).then(applySettings);
   chrome.storage.onChanged.addListener((changes, area) => {

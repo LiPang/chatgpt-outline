@@ -2,9 +2,9 @@
 
 为 ChatGPT 网页添加一个安静的右侧目录：平时只显示横杠，悬停预览提问与标题，点击跳转到相应内容。支持 Edge，也可在 Chrome 中以解压扩展的方式加载。
 
-**当前版本：1.0.1 · Manifest V3 · 本地运行 · 无第三方运行依赖**
+**当前版本：1.0.2 · Manifest V3 · 本地运行 · 无第三方运行依赖**
 
-[下载安装包](chatgpt-outline-v1.0.1.zip?raw=true) · [隐私说明](docs/PRIVACY.md) · [更新记录](docs/CHANGELOG.md)
+[下载安装包](chatgpt-outline-v1.0.2.zip?raw=true) · [隐私说明](docs/PRIVACY.md) · [更新记录](docs/CHANGELOG.md)
 
 ## 示例效果
 
@@ -60,6 +60,7 @@
 - 默认只显示提问与一级标题横杠，四级及以上不进入目录。
 - 预览默认最多 80 个字符，过长时省略，最多显示两行。
 - 新增提问、流式生成回答和切换聊天时自动更新。
+- 切换聊天及浏览器前进、后退时，自动读取当前可见的对话；兼容隐藏旧对话缓存和延迟加载，无需为每次切换刷新网页。
 - 目录太长时可在目录内滚动。
 - 键盘：Tab 进入，上下键在同级移动，右键进入下一级，左键返回上一级，Enter 跳转，Escape 全部收起。
 
@@ -144,8 +145,8 @@ ChatGPT 的网页结构可能改变，需要调整 `chatgpt-outline/outline-core
 │   ├── images/                    虚构内容的效果示例图
 │   ├── PRIVACY.md
 │   └── CHANGELOG.md
-├── tests/                        编号标题识别的回归测试
-├── chatgpt-outline-v1.0.1.zip      可直接解压安装的扩展包
+├── tests/                        标题识别与对话切换的回归测试
+├── chatgpt-outline-v1.0.2.zip      可直接解压安装的扩展包
 ├── README.md
 ├── .gitignore
 └── .gitattributes
@@ -154,5 +155,7 @@ ChatGPT 的网页结构可能改变，需要调整 `chatgpt-outline/outline-core
 `outline-core.js` 负责消息提取、编号识别与分层；`content.js` 负责目录界面和跳转；`popup.*` 为设置页面。浏览器直接加载 `chatgpt-outline/` 即可运行，无需构建步骤。
 
 开发时可使用 Node.js 运行 `node --test tests/numbered-headings.test.cjs`，检查编号识别与分层规则；安装和使用扩展不需要 Node.js。
+
+对话切换的浏览器测试需要本机安装 Microsoft Edge 和开发依赖 `playwright-core`。在仓库目录运行 `npm install --no-save --package-lock=false playwright-core` 后，执行 `node --test tests/conversation-navigation.test.cjs`。测试使用独立的临时浏览器配置和虚构页面，覆盖隐藏旧对话缓存、延迟加载、连续切换、前进后退、新对话、页面容器替换及三级标题跳转。
 
 项目不是 OpenAI 的官方产品，与 OpenAI 无隶属关系。
